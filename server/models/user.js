@@ -1,10 +1,14 @@
-import mongoose from "mongoose";
-const User = new mongoose.Schema({
-	password: {type: 'string', required: true}, // обязательное поле
-	email: { type: 'string', required: true }, // обязательное уникальное поле
-	phoneNumber: { type: 'string', required: false },
-	firstName: { type: 'string', required: false },
-	secondName: { type: 'string', required: false }
-});
+const mongoose = require("mongoose");
+const uniqueValidator = require("mongoose-unique-validator");
 
-export default mongoose.model('User', User);
+const userSchema = new mongoose.Schema({
+	firstName: { type: 'string', required: true },
+	lastName: { type: 'string', required: true },
+	phoneNumber: { type: 'string', required: true, unique: true },
+	email: { type: 'string', required: true, unique: true}, // обязательное уникальное поле
+	password: {type: 'string', required: true, minlength: 5}, // обязательное поле
+	articles: [{ type: mongoose.Types.ObjectId, required: true, ref: "Place" }]
+});
+userSchema.plugin(uniqueValidator);
+
+module.exports = mongoose.model('User', userSchema);
